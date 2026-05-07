@@ -1,0 +1,99 @@
+import sqlite3
+from datetime import datetime
+
+conn = sqlite3.connect("study_planner.db")
+cursor = conn.cursor()
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS planner (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    subject TEXT,
+    hours INTEGER,
+    status TEXT
+)
+""")
+conn.commit()
+
+
+def add_task():
+    subject = input("Enter subject name: ")
+    hours = int(input("Enter study hours: "))
+
+    cursor.execute(
+        "INSERT INTO planner(subject, hours, status) VALUES (?, ?, ?)",
+        (subject, hours, "Pending")
+    )
+    conn.commit()
+
+    print("Task Added Successfully!\n")
+
+
+def view_tasks():
+    cursor.execute("SELECT * FROM planner")
+    tasks = cursor.fetchall()
+
+    if not tasks:
+        print("No tasks found.\n")
+        return
+
+    print("\n------ Study Planner ------")
+    for task in tasks:
+        print(f"ID: {task[0]}")
+        print(f"Subject: {task[1]}")
+        print(f"Hours: {task[2]}")
+        print(f"Status: {task[3]}")
+        print("---------------------------")
+    print()
+
+
+def complete_task():
+    task_id = int(input("Enter Task ID to mark completed: "))
+
+    cursor.execute(
+        "UPDATE planner SET status='Completed' WHERE id=?",
+        (task_id,)
+    )
+    conn.commit()
+
+    print("Task Updated Successfully!\n")
+
+
+def delete_task():
+    task_id = int(input("Enter Task ID to delete: "))
+
+    cursor.execute("DELETE FROM planner WHERE id=?", (task_id,))
+    conn.commit()
+
+    print("Task Deleted Successfully!\n")
+
+
+while True:
+    print("===== Personalized Study Planner =====")
+    print("1. Add Study Task")
+    print("2. View Tasks")
+    print("3. Mark Task Completed")
+    print("4. Delete Task")
+    print("5. Exit")
+
+    choice = input("Enter your choice: ")
+
+    if choice == "1":
+        add_task()
+
+    elif choice == "2":
+        view_tasks()
+
+    elif choice == "3":
+        complete_task()
+
+    elif choice == "4":
+        delete_task()
+
+    elif choice == "5":
+        print("Thank you for using Study Planner!")
+        break
+
+    else:
+        print("Invalid Choice!\n")
+
+conn.close()
