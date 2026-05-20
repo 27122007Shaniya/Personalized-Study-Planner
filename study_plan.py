@@ -1,0 +1,22 @@
+study_plan = {}
+print("===== Personalized Study Planner =====")
+n = int(input("Enter number of subjects: "))
+for i in range(n):
+    subject = input(f"\nEnter subject {i+1} name: ")
+    hours = float(input(f"Enter study hours for {subject}: "))
+    study_plan[subject] = hours
+print("\n===== Your Personalized Study Plan =====")
+total_hours = 0
+for subject, hours in study_plan.items():
+    print(f"{subject} --> {hours} hours")
+    total_hours += hours
+
+print("\nTotal Study Hours:", total_hours)
+print("\n===== Suggestions =====")
+for subject, hours in study_plan.items():
+    if hours < 2:
+        print(f"Spend more time on {subject}")
+    else:
+        print(f"Good progress in {subject}")
+
+print("\nStay consistent and achieve your goals!")
